@@ -1,0 +1,27 @@
+
+node_modules/
+.env
+**/.env
+dist/
+build/
+.DS_Store
+
+# Private environment files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Local logs
+*.log
+
+# Private application database
+backend/data/database.json
