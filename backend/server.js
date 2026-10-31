@@ -2,7 +2,6 @@
 require("dotenv").config();
 
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
 const bcrypt = require("bcryptjs");
@@ -14,6 +13,7 @@ const {
   initializeDatabase,
   updateDatabase
 } = require("./utils/database");
+const { uploadsDirectory } = require("./utils/storagePaths");
 
 const authRoutes = require("./routes/authRoutes");
 const sellerRoutes = require("./routes/sellerRoutes");
@@ -69,7 +69,7 @@ app.use(express.json({ limit: "1mb" }));
 // Serve uploaded product images
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "uploads"))
+  express.static(uploadsDirectory)
 );
 
 const generalLimiter = rateLimit({

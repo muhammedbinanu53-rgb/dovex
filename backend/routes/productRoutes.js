@@ -17,7 +17,7 @@ const {
   requireActiveSeller
 } = require("../middleware/authMiddleware");
 
-const uploadDirectory = path.join(__dirname, "../uploads/products");
+const { productUploadsDirectory: uploadDirectory } = require("../utils/storagePaths");
 
 const allowedTypes = {
   "image/jpeg": ".jpg",

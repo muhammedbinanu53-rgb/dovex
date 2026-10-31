@@ -1,8 +1,6 @@
 
 const fs = require("fs/promises");
-const path = require("path");
-
-const databasePath = path.join(__dirname, "../data/database.json");
+const { databasePath } = require("./storagePaths");
 
 let transactionQueue = Promise.resolve();
 
