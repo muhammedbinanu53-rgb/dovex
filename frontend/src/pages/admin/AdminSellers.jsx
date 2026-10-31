@@ -1,8 +1,13 @@
-
 import { useEffect, useState } from "react";
 import {
-  Search, Ban, Trash2, Store, RefreshCw,
-  CheckCircle2, AlertTriangle
+  Search,
+  Ban,
+  Trash2,
+  Store,
+  RefreshCw,
+  CircleCheck,
+  CheckCircle2,
+  AlertTriangle
 } from "lucide-react";
 
 import { api, patch, del } from "../../api/api";
@@ -50,6 +55,26 @@ export default function AdminSellers() {
     }
   }
 
+  async function unsuspendSeller(seller) {
+    const confirmed = window.confirm(
+      `Unsuspend ${seller.storeName}? This removes the temporary account ban.`
+    );
+
+    if (!confirmed) return;
+
+    setBusyId(seller.id);
+    setError("");
+
+    try {
+      await patch(`/admin/sellers/${seller.id}/unsuspend`, {});
+      await loadSellers();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   async function deleteSeller(seller) {
     const confirmed = window.confirm(
       `PERMANENTLY DELETE ${seller.storeName}?\n\nTheir seller account and active products will be deleted. This cannot be undone.`
@@ -58,7 +83,7 @@ export default function AdminSellers() {
     if (!confirmed) return;
 
     const secondConfirmation = window.prompt(
-      'Type PERMANENTLY DELETE to confirm.'
+      "Type PERMANENTLY DELETE to confirm."
     );
 
     if (secondConfirmation !== "PERMANENTLY DELETE") return;
@@ -85,7 +110,10 @@ export default function AdminSellers() {
       seller.storeName,
       seller.email,
       seller.accountName
-    ].join(" ").toLowerCase().includes(search.toLowerCase());
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
     const matchesFilter =
       filter === "all" ||
@@ -118,11 +146,14 @@ export default function AdminSellers() {
           <input
             placeholder="Search seller, store or account name..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={event => setSearch(event.target.value)}
           />
         </div>
 
-        <select value={filter} onChange={e => setFilter(e.target.value)}>
+        <select
+          value={filter}
+          onChange={event => setFilter(event.target.value)}
+        >
           <option value="all">All sellers</option>
           <option value="active">Active sellers</option>
           <option value="banned">Banned sellers</option>
@@ -137,7 +168,7 @@ export default function AdminSellers() {
         </div>
 
         <div>
-          <strong>{sellers.filter(s => s.banned).length}</strong>
+          <strong>{sellers.filter(seller => seller.banned).length}</strong>
           <span>Temporarily banned</span>
         </div>
 
@@ -175,7 +206,8 @@ export default function AdminSellers() {
                   ? new Date(seller.subscriptionExpiresAt)
                   : null;
 
-                const active = seller.status === "active" &&
+                const active =
+                  seller.status === "active" &&
                   !seller.banned &&
                   expiry &&
                   expiry > new Date();
@@ -195,8 +227,20 @@ export default function AdminSellers() {
                     </td>
 
                     <td>
-                      <span className={`admin-status ${seller.banned ? "danger" : active ? "success" : "warning"}`}>
-                        {seller.banned ? "Banned" : active ? "Active" : "Pending"}
+                      <span
+                        className={`admin-status ${
+                          seller.banned
+                            ? "danger"
+                            : active
+                              ? "success"
+                              : "warning"
+                        }`}
+                      >
+                        {seller.banned
+                          ? "Banned"
+                          : active
+                            ? "Active"
+                            : "Pending"}
                       </span>
                     </td>
 
@@ -208,7 +252,17 @@ export default function AdminSellers() {
 
                     <td>
                       <div className="admin-action-buttons">
-                        {!seller.banned && (
+                        {seller.banned ? (
+                          <button
+                            className="admin-unsuspend-button"
+                            disabled={busyId === seller.id}
+                            onClick={() => unsuspendSeller(seller)}
+                            title="Unsuspend seller"
+                          >
+                            <CircleCheck size={16} />
+                            <span>Unsuspend</span>
+                          </button>
+                        ) : (
                           <button
                             className="admin-ban-button"
                             disabled={busyId === seller.id}

@@ -223,7 +223,8 @@ router.get(
           },
 
           paymentMethod: order.paymentMethod || "cash_on_delivery",
-          paymentStatus: order.paymentStatus || "pending",
+paymentStatus: order.paymentStatus || "pending",
+confirmationCode: order.confirmationCode || null,
 
           dispatch: {
             id: dispatch.id,

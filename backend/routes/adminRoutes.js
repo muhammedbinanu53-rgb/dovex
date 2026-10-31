@@ -1,4 +1,3 @@
-
 const express = require("express");
 
 const router = express.Router();
@@ -18,8 +17,27 @@ router.use(authenticate, requireAdmin);
 // ADMIN OVERVIEW
 router.get("/dashboard", async (req, res) => {
   const db = await readDatabase();
-
   const sellers = db.users.filter(user => user.role === "seller");
+  const now = new Date();
+
+  const expiredSellers = sellers
+    .filter(user =>
+      !user.banned &&
+      user.subscriptionExpiresAt &&
+      new Date(user.subscriptionExpiresAt) <= now
+    )
+    .map(user => ({
+      id: user.id,
+      fullName: user.fullName,
+      storeName: user.storeName,
+      email: user.email,
+      subscriptionExpiresAt: user.subscriptionExpiresAt
+    }))
+    .sort(
+      (a, b) =>
+        new Date(a.subscriptionExpiresAt) -
+        new Date(b.subscriptionExpiresAt)
+    );
 
   res.json({
     statistics: {
@@ -28,7 +46,7 @@ router.get("/dashboard", async (req, res) => {
         user.status === "active" &&
         !user.banned &&
         user.subscriptionExpiresAt &&
-        new Date(user.subscriptionExpiresAt) > new Date()
+        new Date(user.subscriptionExpiresAt) > now
       ).length,
       bannedSellers: sellers.filter(user => user.banned).length,
       pendingRequests: db.reactivationRequests.filter(
@@ -36,7 +54,8 @@ router.get("/dashboard", async (req, res) => {
       ).length,
       totalProducts: db.products.length,
       totalOrders: db.orders.length
-    }
+    },
+    expiredSellers
   });
 });
 
@@ -90,8 +109,9 @@ router.patch("/sellers/:id/ban", async (req, res) => {
   try {
     const result = await updateDatabase(db => {
       const seller = db.users.find(
-        user => user.id === req.params.id &&
-        user.role === "seller"
+        user =>
+          user.id === req.params.id &&
+          user.role === "seller"
       );
 
       if (!seller) {
@@ -114,9 +134,58 @@ router.patch("/sellers/:id/ban", async (req, res) => {
     });
   } catch (error) {
     res.status(error.message === "SELLER_NOT_FOUND" ? 404 : 500).json({
-      message: error.message === "SELLER_NOT_FOUND"
-        ? "Seller not found."
-        : "Unable to ban seller."
+      message:
+        error.message === "SELLER_NOT_FOUND"
+          ? "Seller not found."
+          : "Unable to ban seller."
+    });
+  }
+});
+
+// REMOVE A TEMPORARY SELLER BAN
+router.patch("/sellers/:id/unsuspend", async (req, res) => {
+  try {
+    const result = await updateDatabase(db => {
+      const seller = db.users.find(
+        user =>
+          user.id === req.params.id &&
+          user.role === "seller"
+      );
+
+      if (!seller) {
+        throw new Error("SELLER_NOT_FOUND");
+      }
+
+      seller.banned = false;
+      seller.bannedAt = null;
+
+      if (seller.status === "banned") {
+        const subscriptionIsCurrent =
+          seller.subscriptionExpiresAt &&
+          new Date(seller.subscriptionExpiresAt) > new Date();
+
+        seller.status = subscriptionIsCurrent
+          ? "active"
+          : "pending_subscription";
+      }
+
+      return {
+        id: seller.id,
+        storeName: seller.storeName,
+        status: seller.status
+      };
+    });
+
+    res.json({
+      message: "Seller suspension removed.",
+      seller: result
+    });
+  } catch (error) {
+    res.status(error.message === "SELLER_NOT_FOUND" ? 404 : 500).json({
+      message:
+        error.message === "SELLER_NOT_FOUND"
+          ? "Seller not found."
+          : "Unable to unsuspend seller."
     });
   }
 });
@@ -141,16 +210,18 @@ router.get("/reactivation-requests/:id", async (req, res) => {
 
   res.json({
     request,
-    seller: seller ? {
-      id: seller.id,
-      fullName: seller.fullName,
-      storeName: seller.storeName,
-      email: seller.email,
-      phone: seller.phone,
-      accountName: seller.accountName,
-      banned: seller.banned,
-      status: seller.status
-    } : null
+    seller: seller
+      ? {
+          id: seller.id,
+          fullName: seller.fullName,
+          storeName: seller.storeName,
+          email: seller.email,
+          phone: seller.phone,
+          accountName: seller.accountName,
+          banned: seller.banned,
+          status: seller.status
+        }
+      : null
   });
 });
 
@@ -167,8 +238,9 @@ router.post("/reactivation-requests/:id/approve", async (req, res) => {
       }
 
       const seller = db.users.find(
-        user => user.id === request.sellerId &&
-        user.role === "seller"
+        user =>
+          user.id === request.sellerId &&
+          user.role === "seller"
       );
 
       if (!seller) {
@@ -272,8 +344,9 @@ router.delete("/sellers/:id", async (req, res) => {
 
     await updateDatabase(db => {
       const sellerIndex = db.users.findIndex(
-        user => user.id === req.params.id &&
-        user.role === "seller"
+        user =>
+          user.id === req.params.id &&
+          user.role === "seller"
       );
 
       if (sellerIndex === -1) {
@@ -282,22 +355,20 @@ router.delete("/sellers/:id", async (req, res) => {
 
       const seller = db.users[sellerIndex];
 
-      // Remove seller's products.
       db.products = db.products.filter(
         product => product.sellerId !== seller.id
       );
 
-      // Retain financial and order history, but remove account access.
       db.orders.forEach(order => {
         order.items.forEach(item => {
           if (item.sellerId === seller.id) {
-            item.sellerStoreName = item.sellerStoreName || seller.storeName;
+            item.sellerStoreName =
+              item.sellerStoreName || seller.storeName;
             item.sellerDeleted = true;
           }
         });
       });
 
-      // Remove seller account and pending requests.
       db.users.splice(sellerIndex, 1);
 
       db.reactivationRequests = db.reactivationRequests.filter(
@@ -310,9 +381,10 @@ router.delete("/sellers/:id", async (req, res) => {
     });
   } catch (error) {
     res.status(error.message === "SELLER_NOT_FOUND" ? 404 : 500).json({
-      message: error.message === "SELLER_NOT_FOUND"
-        ? "Seller not found."
-        : "Unable to delete seller."
+      message:
+        error.message === "SELLER_NOT_FOUND"
+          ? "Seller not found."
+          : "Unable to delete seller."
     });
   }
 });

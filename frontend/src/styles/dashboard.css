@@ -918,6 +918,228 @@
   font-weight: 800;
 }
 
+.admin-expired-alert {
+  margin: 22px 0;
+  overflow: hidden;
+  border: 1px solid #f0d6bd;
+  border-radius: 15px;
+  background: #fffaf5;
+}
+
+.admin-expired-alert-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 19px 21px;
+}
+
+.admin-expired-alert-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff0df;
+  color: #c66a27;
+}
+
+.admin-expired-alert-heading > div {
+  flex: 1;
+}
+
+.admin-expired-alert-heading h2 {
+  margin: 5px 0;
+  color: #392e27;
+  font-size: 16px;
+}
+
+.admin-expired-alert-heading p {
+  margin: 0;
+  color: #81756c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-expired-alert-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a95520;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-expired-seller-list {
+  border-top: 1px solid #f2e5da;
+}
+
+.admin-expired-seller {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 21px;
+  border-bottom: 1px solid #f5ebe3;
+}
+
+.admin-expired-seller:last-child {
+  border-bottom: 0;
+}
+
+.admin-expired-seller > div {
+  display: grid;
+  gap: 3px;
+}
+
+.admin-expired-seller strong {
+  color: #34302d;
+  font-size: 12px;
+}
+
+.admin-expired-seller > div span,
+.admin-expired-date {
+  color: #827970;
+  font-size: 11px;
+}
+
+.admin-expired-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .admin-expired-alert-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-expired-alert-link {
+    margin-left: 56px;
+  }
+
+  .admin-expired-seller {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+}
+
+.admin-expired-alert {
+  margin: 22px 0;
+  overflow: hidden;
+  border: 1px solid #f0d6bd;
+  border-radius: 15px;
+  background: #fffaf5;
+}
+
+.admin-expired-alert-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 19px 21px;
+}
+
+.admin-expired-alert-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff0df;
+  color: #c66a27;
+}
+
+.admin-expired-alert-heading > div {
+  flex: 1;
+}
+
+.admin-expired-alert-heading h2 {
+  margin: 5px 0;
+  color: #392e27;
+  font-size: 16px;
+}
+
+.admin-expired-alert-heading p {
+  margin: 0;
+  color: #81756c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-expired-alert-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a95520;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-expired-seller-list {
+  border-top: 1px solid #f2e5da;
+}
+
+.admin-expired-seller {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 21px;
+  border-bottom: 1px solid #f5ebe3;
+}
+
+.admin-expired-seller:last-child {
+  border-bottom: 0;
+}
+
+.admin-expired-seller > div {
+  display: grid;
+  gap: 3px;
+}
+
+.admin-expired-seller strong {
+  color: #34302d;
+  font-size: 12px;
+}
+
+.admin-expired-seller > div span,
+.admin-expired-date {
+  color: #827970;
+  font-size: 11px;
+}
+
+.admin-expired-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .admin-expired-alert-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-expired-alert-link {
+    margin-left: 56px;
+  }
+
+  .admin-expired-seller {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+}
+
 .subscription-grid {
   display: grid;
   grid-template-columns: .9fr 1.1fr;
@@ -1254,6 +1476,23 @@
 
 .admin-ban-button {
   color: #bd802e;
+}
+
+.admin-action-buttons .admin-unsuspend-button {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  color: #27835a;
+  border-color: #cfe6d8;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-action-buttons button:disabled {
+  opacity: 0.55;
+  cursor: wait;
 }
 
 .admin-delete-button {
@@ -2789,4 +3028,22 @@
   .seller-activity-row > .seller-status-pill {
     display: none;
   }
+}
+
+
+.admin-action-buttons .admin-unsuspend-button {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  color: #27835a;
+  border-color: #cfe6d8;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-action-buttons button:disabled {
+  opacity: 0.55;
+  cursor: wait;
 }

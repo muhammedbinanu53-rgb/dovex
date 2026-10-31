@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -321,6 +320,13 @@ export default function SellerOrders() {
                             : "Pending"}
                         </strong>
                       </p>
+                      <p className="p-tag">
+                  <b className="b-tag">Order confirmation code:</b>{" "}
+                        <strong>{order.confirmationCode || "Not available"}</strong>
+                      </p>
+                      <small>
+                        Ask the customer to provide this code to confirm the order.
+                      </small>
                     </div>
                   </div>
 

@@ -291,3 +291,13 @@
     display: none;
   }
 }
+
+.p-tag {
+  text-decoration: underline;
+  text-transform: capitalize;
+}
+
+.b-tag{
+  color:green;
+  text-transform: uppercase;
+}

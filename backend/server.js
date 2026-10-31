@@ -101,7 +101,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // API routes
-app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/seller", sellerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);

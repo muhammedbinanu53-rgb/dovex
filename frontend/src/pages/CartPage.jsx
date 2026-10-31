@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BrandLogo from "../components/BrandLogo";
@@ -13,6 +12,7 @@ import {
   Store,
   ShieldCheck
 } from "lucide-react";
+import { api } from "../api/api";
 import "../styles/cart.css";
 
 const API_BASE_URL = (
@@ -83,7 +83,6 @@ export default function CartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState(readCart);
 
-  // Keep the cart updated if it changes in another browser tab.
   useEffect(() => {
     function handleStorage(event) {
       if (event.key === CART_KEY) {
@@ -98,8 +97,73 @@ export default function CartPage() {
     };
   }, []);
 
-  // All cart changes go through this function.
-  // It saves once and notifies the rest of DoveX.
+  // Fetch delivery areas for older cart entries that don't have them saved.
+  useEffect(() => {
+    let active = true;
+
+    async function loadMissingDeliveryLocations() {
+      const missingItems = cart.filter(
+        item => !Array.isArray(item.deliveryLocations)
+      );
+
+      if (missingItems.length === 0) return;
+
+      const updates = await Promise.all(
+        missingItems.map(async item => {
+          const productId = getProductId(item);
+
+          if (!productId) {
+            return [String(item.id || ""), []];
+          }
+
+          try {
+            const result = await api(
+              `/products/${encodeURIComponent(productId)}`
+            );
+            const product = result.product || result;
+
+            return [
+              String(productId),
+              Array.isArray(product.deliveryLocations)
+                ? product.deliveryLocations
+                : []
+            ];
+          } catch {
+            return [String(productId), []];
+          }
+        })
+      );
+
+      if (!active) return;
+
+      const locationsByProduct = new Map(updates);
+
+      const nextCart = cart.map(item => {
+        if (Array.isArray(item.deliveryLocations)) {
+          return item;
+        }
+
+        const productId = String(
+          getProductId(item) || item.id || ""
+        );
+
+        return {
+          ...item,
+          deliveryLocations: locationsByProduct.get(productId) || []
+        };
+      });
+
+      setCart(nextCart);
+      saveCart(nextCart);
+    }
+
+    loadMissingDeliveryLocations();
+
+    return () => {
+      active = false;
+    };
+  }, [cart]);
+
   function updateCart(nextCart) {
     setCart(nextCart);
     saveCart(nextCart);
@@ -111,8 +175,7 @@ export default function CartPage() {
 
       const quantity = Math.max(1, Number(item.quantity || 1));
       const stock = Number(item.stock);
-      const hasStockLimit =
-        Number.isFinite(stock) && stock >= 0;
+      const hasStockLimit = Number.isFinite(stock) && stock >= 0;
 
       let nextQuantity = Math.max(1, quantity + amount);
 
@@ -143,7 +206,8 @@ export default function CartPage() {
   }
 
   const itemCount = cart.reduce(
-    (total, item) => total + Math.max(0, Number(item.quantity || 0)),
+    (total, item) =>
+      total + Math.max(0, Number(item.quantity || 0)),
     0
   );
 
@@ -238,7 +302,10 @@ export default function CartPage() {
                 {seller.items.map(item => {
                   const image = getImage(item.image);
                   const productId = getProductId(item);
-                  const quantity = Math.max(1, Number(item.quantity || 1));
+                  const quantity = Math.max(
+                    1,
+                    Number(item.quantity || 1)
+                  );
                   const stock = Number(item.stock);
                   const hasStockLimit =
                     Number.isFinite(stock) && stock >= 0;
@@ -274,15 +341,34 @@ export default function CartPage() {
 
                         {(item.color || item.size) && (
                           <div className="cart-page-variants">
-                            {item.color && <span>Colour: {item.color}</span>}
-                            {item.size && <span>Size: {item.size}</span>}
+                            {item.color && (
+                              <span>Colour: {item.color}</span>
+                            )}
+                            {item.size && (
+                              <span>Size: {item.size}</span>
+                            )}
                           </div>
                         )}
+
+                        <div className="cart-product-delivery">
+                          <Truck size={15} />
+                          <div>
+                            <strong>Delivery coverage</strong>
+                            <span>
+                              {Array.isArray(item.deliveryLocations) &&
+                              item.deliveryLocations.length > 0
+                                ? item.deliveryLocations.join(", ")
+                                : "The seller has not specified delivery areas for this product."}
+                            </span>
+                          </div>
+                        </div>
 
                         <div className="cart-page-quantity">
                           <button
                             type="button"
-                            onClick={() => changeQuantity(item.cartIndex, -1)}
+                            onClick={() =>
+                              changeQuantity(item.cartIndex, -1)
+                            }
                             disabled={quantity <= 1}
                             aria-label="Decrease quantity"
                           >
@@ -293,8 +379,12 @@ export default function CartPage() {
 
                           <button
                             type="button"
-                            onClick={() => changeQuantity(item.cartIndex, 1)}
-                            disabled={hasStockLimit && quantity >= stock}
+                            onClick={() =>
+                              changeQuantity(item.cartIndex, 1)
+                            }
+                            disabled={
+                              hasStockLimit && quantity >= stock
+                            }
                             aria-label="Increase quantity"
                           >
                             <Plus size={14} />

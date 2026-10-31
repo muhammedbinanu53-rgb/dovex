@@ -164,6 +164,8 @@ export default function SellerLogin() {
               Login was successful, but your seller account has been
               suspended. Please contact DoveX support or the administrator
               to understand the suspension and request a review.
+              08167355014
+              dovexadmin@gmail.com
             </p>
 
             <button

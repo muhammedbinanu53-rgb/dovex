@@ -218,7 +218,10 @@ export default function ProductDetails() {
       size: selectedSize,
       stock,
       sellerId: product.sellerId || "",
-      sellerStoreName: product.sellerStoreName || ""
+      sellerStoreName: product.sellerStoreName || "",
+      deliveryLocations: Array.isArray(product.deliveryLocations)
+        ? product.deliveryLocations
+        : []
     };
 
     const existingCart = readCart();

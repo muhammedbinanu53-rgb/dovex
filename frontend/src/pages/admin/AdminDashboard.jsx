@@ -1,8 +1,14 @@
-
 import { useEffect, useState } from "react";
 import {
-  Users, UserCheck, Ban, CreditCard,
-  Package, ShoppingBag, ArrowUpRight
+  Users,
+  UserCheck,
+  Ban,
+  CreditCard,
+  Package,
+  ShoppingBag,
+  ArrowUpRight,
+  AlertTriangle,
+  Clock
 } from "lucide-react";
 
 import { api } from "../../api/api";
@@ -13,13 +19,35 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api("/admin/dashboard")
-      .then(setData)
-      .catch(err => setError(err.message));
+    let active = true;
+
+    async function loadDashboard() {
+      try {
+        const result = await api("/admin/dashboard");
+
+        if (active) {
+          setData(result);
+          setError("");
+        }
+      } catch (err) {
+        if (active) setError(err.message);
+      }
+    }
+
+    loadDashboard();
+
+    const interval = window.setInterval(loadDashboard, 60000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
   }, []);
 
   if (error) return <div className="dashboard-error">{error}</div>;
-  if (!data) return <div className="dashboard-loading">Loading control centre...</div>;
+  if (!data) {
+    return <div className="dashboard-loading">Loading control centre...</div>;
+  }
 
   const stats = [
     {
@@ -60,6 +88,8 @@ export default function AdminDashboard() {
     }
   ];
 
+  const expiredSellers = data.expiredSellers || [];
+
   return (
     <div className="admin-dashboard-page">
       <div className="page-heading">
@@ -78,6 +108,7 @@ export default function AdminDashboard() {
           <h2>Welcome to DoveX.</h2>
           <p>Your marketplace management tools are ready.</p>
         </div>
+
         <div className="admin-banner-symbol">
           <Users size={65} />
         </div>
@@ -94,6 +125,54 @@ export default function AdminDashboard() {
           </div>
         ))}
       </div>
+
+      {expiredSellers.length > 0 && (
+        <section className="admin-expired-alert" aria-live="polite">
+          <div className="admin-expired-alert-heading">
+            <span className="admin-expired-alert-icon">
+              <AlertTriangle size={21} />
+            </span>
+
+            <div>
+              <span className="eyebrow">SUBSCRIPTION ALERT</span>
+              <h2>
+                {expiredSellers.length} seller subscription
+                {expiredSellers.length === 1 ? " has" : "s have"} expired
+              </h2>
+              <p>
+                These sellers may need a ₦3,000 renewal payment verified before
+                their store access is restored.
+              </p>
+            </div>
+
+            <Link
+              to="/control/requests"
+              className="admin-expired-alert-link"
+            >
+              View payment requests <ArrowUpRight size={17} />
+            </Link>
+          </div>
+
+          <div className="admin-expired-seller-list">
+            {expiredSellers.map(seller => (
+              <div className="admin-expired-seller" key={seller.id}>
+                <div>
+                  <strong>{seller.storeName || seller.fullName}</strong>
+                  <span>{seller.email}</span>
+                </div>
+
+                <span className="admin-expired-date">
+                  <Clock size={14} />
+                  Expired{" "}
+                  {new Date(
+                    seller.subscriptionExpiresAt
+                  ).toLocaleDateString("en-NG")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="admin-shortcuts">
         <Link to="/control/sellers" className="admin-shortcut">

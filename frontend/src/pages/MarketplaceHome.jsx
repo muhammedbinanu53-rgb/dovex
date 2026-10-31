@@ -440,6 +440,9 @@ const category = getCategoryValue(
         {
           ...product,
           id: productId,
+          deliveryLocations: Array.isArray(product.deliveryLocations)
+            ? product.deliveryLocations
+            : [],
           quantity: 1
         }
       ];
