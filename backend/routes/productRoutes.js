@@ -1,7 +1,6 @@
 
 const express = require("express");
 const crypto = require("crypto");
-const fs = require("fs/promises");
 const path = require("path");
 const multer = require("multer");
 
@@ -17,7 +16,7 @@ const {
   requireActiveSeller
 } = require("../middleware/authMiddleware");
 
-const { productUploadsDirectory: uploadDirectory } = require("../utils/storagePaths");
+const { uploadProductImages, removeProductImages, removeTemporaryUploads } = require("../utils/productImageStorage");
 
 const allowedTypes = {
   "image/jpeg": ".jpg",
@@ -28,26 +27,7 @@ const allowedTypes = {
 const MAX_IMAGES = 8;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const storage = multer.diskStorage({
-  destination: async (req, file, callback) => {
-    try {
-      await fs.mkdir(uploadDirectory, { recursive: true });
-      callback(null, uploadDirectory);
-    } catch (error) {
-      callback(error);
-    }
-  },
-
-  filename: (req, file, callback) => {
-    const extension = allowedTypes[file.mimetype];
-
-    if (!extension) {
-      return callback(new Error("INVALID_IMAGE_TYPE"));
-    }
-
-    callback(null, `${crypto.randomUUID()}${extension}`);
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
@@ -64,10 +44,8 @@ const upload = multer({
   }
 });
 
-function uploadedImagePaths(req) {
-  return (req.files || []).map(
-    file => `/uploads/products/${file.filename}`
-  );
+async function uploadedImagePaths(req) {
+  return uploadProductImages(req.files || []);
 }
 
 function isValidImagePath(image) {
@@ -132,27 +110,11 @@ function cleanStringArray(value, fieldName, maximum = 100) {
 }
 
 async function removeUploadedFiles(files) {
-  await Promise.all(
-    (files || []).map(file =>
-      fs.unlink(file.path).catch(() => {})
-    )
-  );
+  await removeTemporaryUploads(files || []);
 }
 
 async function removeUnusedProductImages(images) {
-  const paths = (images || []).filter(image =>
-    typeof image === "string" &&
-    /^\/uploads\/products\/[a-zA-Z0-9-]+\.(jpg|png|webp)$/i.test(image)
-  );
-
-  await Promise.all(
-    paths.map(image => {
-      const filename = path.basename(image);
-      const filePath = path.join(uploadDirectory, filename);
-
-      return fs.unlink(filePath).catch(() => {});
-    })
-  );
+  await removeProductImages(images || []);
 }
 
 function handleUploadError(error, req, res, next) {
@@ -310,6 +272,7 @@ router.post(
   upload.array("images", MAX_IMAGES),
   async (req, res) => {
     const files = req.files || [];
+    let uploadedImages = [];
 
     try {
       const {
@@ -325,7 +288,7 @@ router.post(
         deliveryLocations
       } = req.body;
 
-      const images = uploadedImagePaths(req);
+      const images = uploadedImages = await uploadedImagePaths(req);
 
       const product = {
         id: crypto.randomUUID(),
@@ -362,6 +325,7 @@ router.post(
       });
     } catch (error) {
       await removeUploadedFiles(files);
+      await removeProductImages(uploadedImages);
 
       console.error("Add product error:", error);
 
@@ -382,9 +346,11 @@ router.put(
   upload.array("images", MAX_IMAGES),
   async (req, res) => {
     const files = req.files || [];
+    let uploadedImages = [];
     let oldImagesToRemove = [];
 
     try {
+      uploadedImages = await uploadedImagePaths(req);
       const result = await updateDatabase(db => {
         const product = db.products.find(
           item =>
@@ -412,7 +378,7 @@ router.put(
           throw new Error("INVALID_PRODUCT");
         }
 
-        const newImages = uploadedImagePaths(req);
+        const newImages = uploadedImages;
 
         const updatedProduct = {
           ...product,
@@ -467,6 +433,7 @@ router.put(
       });
     } catch (error) {
       await removeUploadedFiles(files);
+      await removeProductImages(uploadedImages);
 
       console.error("Edit product error:", error);
 

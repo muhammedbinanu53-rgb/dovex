@@ -2,22 +2,14 @@ services:
   - type: web
     name: dovex-api
     runtime: node
-    plan: 0.5c-512mb
+    plan: free
     rootDir: backend
     buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/health
-    disk:
-      name: dovex-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DOVEX_DATA_DIR
-        value: /var/data
-      - key: DOVEX_UPLOADS_DIR
-        value: /var/data/uploads
       - key: JWT_SECRET
         generateValue: true
       - key: ADMIN_EMAIL
@@ -26,3 +18,9 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        value: product-images
