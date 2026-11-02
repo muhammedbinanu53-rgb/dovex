@@ -415,6 +415,7 @@ export default function SellerProducts() {
               <div>
                 <span className="eyebrow">PRODUCT STUDIO</span>
                 <h2>{editingId ? "Edit product" : "Create a product"}</h2>
+                <p>Build a clear listing customers can shop with confidence.</p>
               </div>
 
               <button type="button" onClick={closeModal}>
@@ -422,8 +423,8 @@ export default function SellerProducts() {
               </button>
             </div>
 
-            <form onSubmit={handleSave}>
-              <div className="editor-section">
+            <form className="product-editor-form" onSubmit={handleSave}>
+              <div className="editor-section editor-basic-section">
                 <h3>Basic information</h3>
 
                 <label>
@@ -514,7 +515,7 @@ export default function SellerProducts() {
                 </label>
               </div>
 
-              <div className="editor-section">
+              <div className="editor-section editor-images-section">
                 <h3><ImagePlus size={19} /> Product images</h3>
                 <p>Select photos from your phone or computer.</p>
 
@@ -579,7 +580,7 @@ export default function SellerProducts() {
                 )}
               </div>
 
-              <div className="editor-section">
+              <div className="editor-section editor-colours-section">
                 <h3><Palette size={19} /> Available colours</h3>
                 <p>Select every colour customers can choose.</p>
 
@@ -597,7 +598,7 @@ export default function SellerProducts() {
                 </div>
               </div>
 
-              <div className="editor-section">
+              <div className="editor-section editor-sizes-section">
                 <h3><Ruler size={19} /> Available sizes</h3>
                 <p>Fashion products should have available sizes.</p>
 
@@ -615,7 +616,7 @@ export default function SellerProducts() {
                 </div>
               </div>
 
-              <div className="editor-section">
+              <div className="editor-section editor-delivery-section">
                 <h3>Product delivery locations</h3>
                 <p>Choose the delivery areas for this product.</p>
 

@@ -1122,3 +1122,29 @@
 @media (max-width: 520px) {
   .customer-account-modal { padding: 27px 22px; border-radius: 20px; }
 }
+
+/* Compact checkout account prompt */
+.customer-account-backdrop { padding: 12px; overflow: hidden; }
+.customer-account-modal { width: min(100%, 420px); max-height: none; overflow: visible; padding: 23px 26px 19px; border-radius: 22px; }
+.customer-account-close { top: 13px; right: 13px; width: 34px; height: 34px; border-radius: 10px; }
+.customer-account-icon { width: 44px; height: 44px; margin-bottom: 13px; border-radius: 13px; }
+.customer-account-modal h2 { margin: 3px 38px 7px 0; font-size: 24px; }
+.customer-account-intro { font-size: 12px; line-height: 1.5; }
+.customer-account-tabs { margin: 15px 0 13px; padding: 4px; }
+.customer-account-tabs button { min-height: 37px; }
+.customer-account-form { gap: 10px; }
+.customer-account-form label { gap: 5px; font-size: 11px; }
+.customer-account-form input { min-height: 42px; border-radius: 10px; }
+.customer-account-submit { min-height: 44px; }
+.customer-account-note { margin-top: 12px; font-size: 9px; }
+@media (max-width: 520px) {
+  .customer-account-modal { padding: 21px 19px 17px; border-radius: 19px; }
+}
+@media (max-height: 660px) {
+  .customer-account-modal { padding-top: 15px; padding-bottom: 14px; }
+  .customer-account-icon { width: 38px; height: 38px; margin-bottom: 9px; }
+  .customer-account-tabs { margin: 11px 0 10px; }
+  .customer-account-form { gap: 8px; }
+  .customer-account-form input { min-height: 38px; }
+  .customer-account-note { margin-top: 8px; }
+}
