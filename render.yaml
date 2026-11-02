@@ -24,3 +24,14 @@ services:
         sync: false
       - key: SUPABASE_STORAGE_BUCKET
         value: product-images
+
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false

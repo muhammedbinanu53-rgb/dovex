@@ -88,6 +88,16 @@ export function AuthProvider({ children }) {
     return result;
   }
 
+  async function requestCustomerPasswordReset(email) {
+    return post("/auth/customer/forgot-password", { email });
+  }
+
+  async function resetCustomerPassword(details) {
+    const result = await post("/auth/customer/reset-password", details);
+    saveToken(result.token);
+    setUser(result.user);
+    return result;
+  }
   async function refreshUser() {
     const result = await api("/auth/me");
     setUser(result.user);
@@ -108,6 +118,8 @@ export function AuthProvider({ children }) {
         loginCustomer,
         register,
         registerCustomer,
+        requestCustomerPasswordReset,
+        resetCustomerPassword,
         logout,
         refreshUser
       }}

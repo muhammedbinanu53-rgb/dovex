@@ -86,7 +86,7 @@ function getDispatchItems(dispatch) {
 }
 
 export default function CheckoutPage() {
-  const { user, loading: authLoading, loginCustomer, registerCustomer } = useAuth();
+  const { user, loading: authLoading, loginCustomer, registerCustomer, requestCustomerPasswordReset, resetCustomerPassword } = useAuth();
   const checkoutFormRef = useRef(null);
   const [cart] = useState(getCart);
 
@@ -113,7 +113,20 @@ export default function CheckoutPage() {
   const [accountError, setAccountError] = useState("");
   const [accountLoading, setAccountLoading] = useState(false);
   const [submitAfterAccount, setSubmitAfterAccount] = useState(false);
+  const [passwordResetStep, setPasswordResetStep] = useState("email");
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resendCountdown, setResendCountdown] = useState(0);
+  const [accountNotice, setAccountNotice] = useState("");
 
+  useEffect(() => {
+    if (resendCountdown <= 0) return undefined;
+    const timer = setTimeout(() => {
+      setResendCountdown(previous => Math.max(0, previous - 1));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [resendCountdown]);
   useEffect(() => {
     if (user?.role !== "customer") return;
     setForm(previous => ({
@@ -124,6 +137,13 @@ export default function CheckoutPage() {
     }));
   }, [user]);
 
+  useEffect(() => {
+    if (resendCountdown <= 0) return undefined;
+    const timer = setTimeout(() => {
+      setResendCountdown(previous => Math.max(0, previous - 1));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [resendCountdown]);
   useEffect(() => {
     if (!submitAfterAccount || user?.role !== "customer") return undefined;
     const frame = requestAnimationFrame(() => {
@@ -194,6 +214,69 @@ export default function CheckoutPage() {
     }
   }
 
+  async function requestPasswordReset(event) {
+    event.preventDefault();
+    setAccountError("");
+    setAccountNotice("");
+    setAccountLoading(true);
+    try {
+      const result = await requestCustomerPasswordReset(accountForm.email.trim());
+      setPasswordResetStep("code");
+      setResetCode("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setResendCountdown(60);
+      setAccountNotice(result.message || "If an account exists for that address, a code is on the way.");
+    } catch (err) {
+      setAccountError(err.message || "We could not send a reset code. Please try again.");
+    } finally {
+      setAccountLoading(false);
+    }
+  }
+
+  async function resendPasswordResetCode() {
+    if (accountLoading || resendCountdown > 0) return;
+    setAccountError("");
+    setAccountNotice("");
+    setAccountLoading(true);
+    try {
+      const result = await requestCustomerPasswordReset(accountForm.email.trim());
+      setResendCountdown(60);
+      setAccountNotice(result.message || "If an account exists for that address, a new code is on the way.");
+    } catch (err) {
+      setAccountError(err.message || "We could not resend the code. Please try again.");
+    } finally {
+      setAccountLoading(false);
+    }
+  }
+
+  async function completePasswordReset(event) {
+    event.preventDefault();
+    setAccountError("");
+    setAccountNotice("");
+    if (newPassword !== confirmPassword) {
+      setAccountError("The new passwords do not match.");
+      return;
+    }
+
+    setAccountLoading(true);
+    try {
+      await resetCustomerPassword({
+        email: accountForm.email.trim(),
+        code: resetCode.trim(),
+        password: newPassword
+      });
+      setAccountModal(false);
+      setAccountMode("register");
+      setPasswordResetStep("email");
+      setAccountNotice("");
+      setSubmitAfterAccount(true);
+    } catch (err) {
+      setAccountError(err.message || "We could not reset your password. Please try again.");
+    } finally {
+      setAccountLoading(false);
+    }
+  }
   async function submitOrder(event) {
     event.preventDefault();
     setError("");
@@ -797,22 +880,39 @@ export default function CheckoutPage() {
               <X size={19} />
             </button>
             <div className="customer-account-icon"><LockKeyhole size={23} /></div>
-            <span className="checkout-eyebrow">ONE QUICK STEP</span>
+            <span className="checkout-eyebrow">ACCOUNT SECURITY</span>
             <h2 id="customer-account-title">
-              {accountMode === "register" ? "Create your DoveX account" : "Welcome back"}
+              {accountMode === "register"
+                ? "Create your DoveX account"
+                : accountMode === "forgot"
+                  ? passwordResetStep === "email" ? "Reset your password" : "Check your email"
+                  : "Welcome back"}
             </h2>
             <p className="customer-account-intro">
               {accountMode === "register"
                 ? "Create an account to continue placing your order. Your cart will stay right here."
-                : "Log in to your customer account and continue with your order."}
+                : accountMode === "forgot"
+                  ? passwordResetStep === "email"
+                    ? "Enter the email address linked to your customer account."
+                    : "Enter the 4-digit code sent to " + accountForm.email + " and choose a new password."
+                  : "Log in to your customer account and continue with your order."}
             </p>
 
-            <div className="customer-account-tabs" role="tablist" aria-label="Account options">
-              <button type="button" role="tab" aria-selected={accountMode === "register"} onClick={() => { setAccountMode("register"); setAccountError(""); }}>Create account</button>
-              <button type="button" role="tab" aria-selected={accountMode === "login"} onClick={() => { setAccountMode("login"); setAccountError(""); }}>Log in</button>
-            </div>
+            {accountMode !== "forgot" && (
+              <div className="customer-account-tabs" role="tablist" aria-label="Account options">
+                <button type="button" role="tab" aria-selected={accountMode === "register"} onClick={() => { setAccountMode("register"); setAccountError(""); setAccountNotice(""); }}>Create account</button>
+                <button type="button" role="tab" aria-selected={accountMode === "login"} onClick={() => { setAccountMode("login"); setAccountError(""); setAccountNotice(""); }}>Log in</button>
+              </div>
+            )}
 
-            <form className="customer-account-form" onSubmit={submitAccount}>
+            {accountNotice && <div className="customer-account-notice" role="status">{accountNotice}</div>}
+
+            <form
+              className="customer-account-form"
+              onSubmit={accountMode === "forgot"
+                ? passwordResetStep === "email" ? requestPasswordReset : completePasswordReset
+                : submitAccount}
+            >
               {accountMode === "register" && (
                 <>
                   <label>Full name
@@ -823,17 +923,83 @@ export default function CheckoutPage() {
                   </label>
                 </>
               )}
-              <label>Email address
-                <input autoComplete="email" name="email" type="email" value={accountForm.email} onChange={event => setAccountForm(previous => ({ ...previous, email: event.target.value }))} required maxLength={150} placeholder="you@example.com" />
-              </label>
-              <label>Password
-                <input autoComplete={accountMode === "register" ? "new-password" : "current-password"} name="password" type="password" value={accountForm.password} onChange={event => setAccountForm(previous => ({ ...previous, password: event.target.value }))} required minLength={accountMode === "register" ? 10 : 1} placeholder={accountMode === "register" ? "At least 10 characters" : "Your password"} />
-              </label>
+
+              {accountMode !== "forgot" || passwordResetStep === "email" ? (
+                <label>Email address
+                  <input autoComplete="email" name="email" type="email" value={accountForm.email} onChange={event => { const email = event.target.value; setAccountForm(previous => ({ ...previous, email })); if (email.trim().toLowerCase() !== accountForm.email.trim().toLowerCase()) { setResendCountdown(0); setAccountNotice(""); } }} required maxLength={150} placeholder="you@example.com" />
+                </label>
+              ) : (
+                <label>4-digit code
+                  <input autoComplete="one-time-code" inputMode="numeric" name="resetCode" type="text" value={resetCode} onChange={event => setResetCode(event.target.value.replace(/\D/g, "").slice(0, 4))} required pattern="[0-9]{4}" minLength={4} maxLength={4} placeholder="0000" />
+                </label>
+              )}
+
+              {(accountMode === "register" || accountMode === "login") && (
+                <label>Password
+                  <input autoComplete={accountMode === "register" ? "new-password" : "current-password"} name="password" type="password" value={accountForm.password} onChange={event => setAccountForm(previous => ({ ...previous, password: event.target.value }))} required minLength={accountMode === "register" ? 10 : 1} placeholder={accountMode === "register" ? "At least 10 characters" : "Your password"} />
+                </label>
+              )}
+
+              {accountMode === "forgot" && passwordResetStep === "code" && (
+                <>
+                  <label>New password
+                    <input autoComplete="new-password" name="newPassword" type="password" value={newPassword} onChange={event => setNewPassword(event.target.value)} required minLength={10} maxLength={128} placeholder="At least 10 characters" />
+                  </label>
+                  <label>Confirm new password
+                    <input autoComplete="new-password" name="confirmPassword" type="password" value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} required minLength={10} maxLength={128} placeholder="Enter the new password again" />
+                  </label>
+                </>
+              )}
+
+              {accountMode === "login" && (
+                <button
+                  type="button"
+                  className="customer-account-forgot-link"
+                  onClick={() => {
+                    setAccountMode("forgot");
+                    setPasswordResetStep("email");
+                    setAccountError("");
+                    setAccountNotice("");
+                    setResendCountdown(0);
+                  }}
+                >
+                  Forgot password?
+                </button>
+              )}
+
               {accountError && <div className="customer-account-error" role="alert">{accountError}</div>}
               <button className="checkout-primary-button customer-account-submit" type="submit" disabled={accountLoading}>
-                {accountLoading ? <><LoaderCircle size={18} /> Please wait...</> : accountMode === "register" ? "Create account and continue" : "Log in and continue"}
+                {accountLoading
+                  ? <><LoaderCircle size={18} /> Please wait...</>
+                  : accountMode === "register"
+                    ? "Create account and continue"
+                    : accountMode === "login"
+                      ? "Log in and continue"
+                      : passwordResetStep === "email"
+                        ? "Send 4-digit code"
+                        : "Set new password and continue"}
               </button>
             </form>
+
+            {accountMode === "forgot" && (
+              <div className="customer-account-recovery-actions">
+                {passwordResetStep === "email" ? (
+                  <button type="button" className="customer-account-text-button" onClick={() => { setAccountMode("login"); setAccountError(""); setAccountNotice(""); }}>
+                    Back to log in
+                  </button>
+                ) : (
+                  <>
+                    <button type="button" className="customer-account-text-button" onClick={resendPasswordResetCode} disabled={accountLoading || resendCountdown > 0}>
+                      {resendCountdown > 0 ? "Resend code in " + resendCountdown + "s" : "Resend code"}
+                    </button>
+                    <button type="button" className="customer-account-text-button" onClick={() => { setPasswordResetStep("email"); setAccountError(""); setAccountNotice(""); }}>
+                      Change email
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
             <small className="customer-account-note"><ShieldCheck size={15} /> Your account keeps checkout details connected to you.</small>
           </section>
         </div>

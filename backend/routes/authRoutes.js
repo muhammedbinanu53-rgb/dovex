@@ -3,6 +3,8 @@ const express = require("express");
 const crypto = require("crypto");
 
 const router = express.Router();
+const rateLimit = require("express-rate-limit");
+const { isPasswordResetEmailConfigured, sendPasswordResetCode } = require("../utils/passwordResetEmail");
 
 const {
   readDatabase,
@@ -137,6 +139,176 @@ router.post("/register", async (req, res) => {
   }
 });
 
+const passwordResetRequestLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { message: "Too many reset requests. Please wait before trying again." }
+});
+
+const passwordResetVerifyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { message: "Too many code attempts. Please request a new code later." }
+});
+
+const PASSWORD_RESET_REQUEST_MESSAGE =
+  "If a customer account exists for that email, a reset code has been sent.";
+
+function passwordResetCodeHash(userId, code) {
+  return crypto
+    .createHmac("sha256", process.env.JWT_SECRET)
+    .update("customer-password-reset:" + userId + ":" + code)
+    .digest("hex");
+}
+
+router.post("/customer/forgot-password", passwordResetRequestLimiter, async (req, res) => {
+  const email = cleanEmail(req.body.email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ message: "Enter a valid email address." });
+  }
+
+  if (!isPasswordResetEmailConfigured()) {
+    return res.status(503).json({
+      message: "Password reset email is not configured yet. Please try again later."
+    });
+  }
+
+  const now = Date.now();
+  const code = String(crypto.randomInt(0, 10000)).padStart(4, "0");
+  let recipient = "";
+  let newCodeHash = "";
+
+  try {
+    await updateDatabase(data => {
+      const customer = data.users.find(user =>
+        user.email === email &&
+        user.role === "customer" &&
+        user.status === "active"
+      );
+      if (!customer) return;
+
+      const previousSentAt = Date.parse(customer.passwordReset?.sentAt || "");
+      if (Number.isFinite(previousSentAt) && now - previousSentAt < 55 * 1000) {
+        return;
+      }
+
+      recipient = customer.email;
+      customer.passwordReset = {
+        codeHash: passwordResetCodeHash(customer.id, code),
+        expiresAt: new Date(now + 10 * 60 * 1000).toISOString(),
+        sentAt: new Date(now).toISOString(),
+        attempts: 0
+      };
+      newCodeHash = customer.passwordReset.codeHash;
+    });
+
+    if (recipient) {
+      try {
+        await sendPasswordResetCode(recipient, code);
+      } catch (error) {
+        await updateDatabase(data => {
+          const customer = data.users.find(user =>
+            user.email === email && user.role === "customer"
+          );
+          if (customer?.passwordReset?.codeHash === newCodeHash) {
+            delete customer.passwordReset;
+          }
+        });
+        console.error("Password reset email delivery failed:", error.message);
+        return res.status(503).json({
+          message: "We could not send your reset code right now. Please try again shortly."
+        });
+      }
+    }
+
+    return res.json({ message: PASSWORD_RESET_REQUEST_MESSAGE });
+  } catch (error) {
+    console.error("Password reset request failed:", error);
+    return res.status(500).json({
+      message: "Unable to request a password reset right now."
+    });
+  }
+});
+
+router.post("/customer/reset-password", passwordResetVerifyLimiter, async (req, res) => {
+  const email = cleanEmail(req.body.email);
+  const code = String(req.body.code || "").trim();
+  const password = String(req.body.password || "");
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ message: "Enter a valid email address." });
+  }
+  if (!/^\d{4}$/.test(code)) {
+    return res.status(400).json({ message: "Enter the 4-digit code from your email." });
+  }
+  if (password.length < 10 || password.length > 128) {
+    return res.status(400).json({
+      message: "Your new password must contain 10 to 128 characters."
+    });
+  }
+
+  let outcome = "invalid";
+  let resetCustomer = null;
+  try {
+    await updateDatabase(async data => {
+      const customer = data.users.find(user =>
+        user.email === email &&
+        user.role === "customer" &&
+        user.status === "active"
+      );
+      const challenge = customer?.passwordReset;
+      if (!customer || !challenge) return;
+
+      const expiresAt = Date.parse(challenge.expiresAt);
+      if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
+        delete customer.passwordReset;
+        outcome = "invalid";
+        return;
+      }
+
+      const expected = Buffer.from(challenge.codeHash, "hex");
+      const actual = Buffer.from(passwordResetCodeHash(customer.id, code), "hex");
+      if (expected.length !== actual.length || !crypto.timingSafeEqual(expected, actual)) {
+        challenge.attempts = Number(challenge.attempts || 0) + 1;
+        if (challenge.attempts >= 5) delete customer.passwordReset;
+        return;
+      }
+
+      customer.passwordHash = await hashPassword(password);
+      delete customer.passwordReset;
+      resetCustomer = customer;
+      outcome = "success";
+    });
+
+    if (outcome !== "success" || !resetCustomer) {
+      return res.status(400).json({
+        message: "That code is invalid or expired. Request a new code and try again."
+      });
+    }
+
+    return res.json({
+      message: "Password updated successfully.",
+      token: createToken(resetCustomer),
+      user: {
+        id: resetCustomer.id,
+        fullName: resetCustomer.fullName,
+        email: resetCustomer.email,
+        phone: resetCustomer.phone,
+        role: resetCustomer.role,
+        status: resetCustomer.status
+      }
+    });
+  } catch (error) {
+    console.error("Password reset failed:", error);
+    return res.status(500).json({
+      message: "Unable to reset your password right now."
+    });
+  }
+});
 // Customer accounts are separate from seller storefront accounts.
 router.post("/customer/register", async (req, res) => {
   try {

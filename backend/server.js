@@ -22,6 +22,7 @@ const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
+app.set("trust proxy", 1);
 
 const PORT = Number(process.env.PORT || 5000);
 
