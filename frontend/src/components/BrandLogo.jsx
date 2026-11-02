@@ -4,13 +4,15 @@ export default function BrandLogo({
   imageClassName = ""
 }) {
   return (
-    <span className={`dovex-brand ${className}`}>
+    <span
+      className={`dovex-brand ${className}`}
+      aria-label={showName ? undefined : "DoveX"}
+    >
       <img
-        src="/dovex-logo.png"
-        alt="DoveX"
+        src="/dovex-logo-black.svg"
+        alt=""
         className={`dovex-brand-image ${imageClassName}`}
       />
-
       {showName && (
         <span className="dovex-brand-name">
           Dove<span>X</span>

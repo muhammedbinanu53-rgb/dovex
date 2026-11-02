@@ -41,7 +41,7 @@ export default function SellerSidebar({ open, close }) {
 
       <aside className={`dashboard-sidebar ${open ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
-          <img src="/dovex-logo.png" alt="DoveX" className="dovex-brand-image" />
+          <img src="/dovex-logo-black.svg" alt="" className="dovex-brand-image" />
           <div>
             <strong>Dove<span>X</span></strong>
             <small>SELLER STUDIO</small>

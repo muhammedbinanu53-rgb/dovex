@@ -53,6 +53,15 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+function requireCustomer(req, res, next) {
+  if (!req.user || req.user.role !== "customer") {
+    return res.status(403).json({
+      message: "A DoveX customer account is required to place an order."
+    });
+  }
+  next();
+}
+
 function requireActiveSeller(req, res, next) {
   if (!req.user || req.user.role !== "seller") {
     return res.status(403).json({
@@ -90,5 +99,6 @@ function requireActiveSeller(req, res, next) {
 module.exports = {
   authenticate,
   requireAdmin,
+  requireCustomer,
   requireActiveSeller
 };

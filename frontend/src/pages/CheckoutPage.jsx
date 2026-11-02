@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   MapPin,
@@ -15,10 +15,13 @@ import {
   LoaderCircle,
   Hash,
   Store,
-  ShieldCheck
+  ShieldCheck,
+  X,
+  LockKeyhole
 } from "lucide-react";
 
 import { post } from "../api/api";
+import { useAuth } from "../context/AuthContext";
 import "../styles/checkout.css";
 
 const CART_KEY = "dovex_cart";
@@ -83,6 +86,8 @@ function getDispatchItems(dispatch) {
 }
 
 export default function CheckoutPage() {
+  const { user, loading: authLoading, loginCustomer, registerCustomer } = useAuth();
+  const checkoutFormRef = useRef(null);
   const [cart] = useState(getCart);
 
   const [form, setForm] = useState({
@@ -97,6 +102,36 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(null);
+  const [accountModal, setAccountModal] = useState(false);
+  const [accountMode, setAccountMode] = useState("register");
+  const [accountForm, setAccountForm] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    password: ""
+  });
+  const [accountError, setAccountError] = useState("");
+  const [accountLoading, setAccountLoading] = useState(false);
+  const [submitAfterAccount, setSubmitAfterAccount] = useState(false);
+
+  useEffect(() => {
+    if (user?.role !== "customer") return;
+    setForm(previous => ({
+      ...previous,
+      customerName: previous.customerName || user.fullName || "",
+      phone: previous.phone || user.phone || "",
+      email: previous.email || user.email || ""
+    }));
+  }, [user]);
+
+  useEffect(() => {
+    if (!submitAfterAccount || user?.role !== "customer") return undefined;
+    const frame = requestAnimationFrame(() => {
+      checkoutFormRef.current?.requestSubmit();
+      setSubmitAfterAccount(false);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [submitAfterAccount, user]);
 
   const subtotal = cart.reduce((sum, item) => {
     return (
@@ -120,9 +155,53 @@ export default function CheckoutPage() {
     }));
   }
 
+  function handlePlaceOrder() {
+    if (user?.role !== "customer") {
+      setAccountError("");
+      setAccountModal(true);
+      return;
+    }
+    checkoutFormRef.current?.requestSubmit();
+  }
+
+  async function submitAccount(event) {
+    event.preventDefault();
+    setAccountError("");
+    setAccountLoading(true);
+    try {
+      const credentials = {
+        email: accountForm.email.trim(),
+        password: accountForm.password
+      };
+      const result = accountMode === "register"
+        ? await registerCustomer({
+            ...credentials,
+            fullName: accountForm.fullName.trim(),
+            phone: accountForm.phone.trim()
+          })
+        : await loginCustomer(credentials);
+
+      if (result.user?.role !== "customer") {
+        setAccountError("That login belongs to a seller account. Use a customer account to order.");
+        return;
+      }
+      setAccountModal(false);
+      setSubmitAfterAccount(true);
+    } catch (err) {
+      setAccountError(err.message || "We could not verify your account. Please try again.");
+    } finally {
+      setAccountLoading(false);
+    }
+  }
+
   async function submitOrder(event) {
     event.preventDefault();
     setError("");
+
+    if (user?.role !== "customer") {
+      setAccountModal(true);
+      return;
+    }
 
     if (!cart.length) {
       setError("Your cart is empty. Add products before checkout.");
@@ -160,6 +239,9 @@ export default function CheckoutPage() {
     try {
       const result = await post("/orders", {
         ...form,
+        customerName: user.fullName || form.customerName,
+        email: user.email || form.email,
+        phone: user.phone || form.phone,
         items
       });
 
@@ -460,6 +542,7 @@ export default function CheckoutPage() {
 
       <div className="checkout-layout">
         <form
+          ref={checkoutFormRef}
           className="checkout-form"
           onSubmit={submitOrder}
         >
@@ -598,9 +681,10 @@ export default function CheckoutPage() {
           )}
 
           <button
-            type="submit"
+            type="button"
             className="checkout-primary-button"
-            disabled={loading}
+            onClick={handlePlaceOrder}
+            disabled={loading || authLoading}
           >
             {loading ? (
               <>
@@ -687,6 +771,73 @@ export default function CheckoutPage() {
           </div>
         </aside>
       </div>
+
+      {accountModal && (
+        <div
+          className="customer-account-backdrop"
+          onMouseDown={event => {
+            if (event.target === event.currentTarget && !accountLoading) {
+              setAccountModal(false);
+            }
+          }}
+        >
+          <section
+            className="customer-account-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customer-account-title"
+          >
+            <button
+              className="customer-account-close"
+              type="button"
+              aria-label="Close account prompt"
+              onClick={() => setAccountModal(false)}
+              disabled={accountLoading}
+            >
+              <X size={19} />
+            </button>
+            <div className="customer-account-icon"><LockKeyhole size={23} /></div>
+            <span className="checkout-eyebrow">ONE QUICK STEP</span>
+            <h2 id="customer-account-title">
+              {accountMode === "register" ? "Create your DoveX account" : "Welcome back"}
+            </h2>
+            <p className="customer-account-intro">
+              {accountMode === "register"
+                ? "Create an account to continue placing your order. Your cart will stay right here."
+                : "Log in to your customer account and continue with your order."}
+            </p>
+
+            <div className="customer-account-tabs" role="tablist" aria-label="Account options">
+              <button type="button" role="tab" aria-selected={accountMode === "register"} onClick={() => { setAccountMode("register"); setAccountError(""); }}>Create account</button>
+              <button type="button" role="tab" aria-selected={accountMode === "login"} onClick={() => { setAccountMode("login"); setAccountError(""); }}>Log in</button>
+            </div>
+
+            <form className="customer-account-form" onSubmit={submitAccount}>
+              {accountMode === "register" && (
+                <>
+                  <label>Full name
+                    <input autoComplete="name" name="fullName" value={accountForm.fullName} onChange={event => setAccountForm(previous => ({ ...previous, fullName: event.target.value }))} required maxLength={100} placeholder="Your name" />
+                  </label>
+                  <label>Phone number
+                    <input autoComplete="tel" name="phone" type="tel" value={accountForm.phone} onChange={event => setAccountForm(previous => ({ ...previous, phone: event.target.value }))} required maxLength={30} placeholder="Your phone number" />
+                  </label>
+                </>
+              )}
+              <label>Email address
+                <input autoComplete="email" name="email" type="email" value={accountForm.email} onChange={event => setAccountForm(previous => ({ ...previous, email: event.target.value }))} required maxLength={150} placeholder="you@example.com" />
+              </label>
+              <label>Password
+                <input autoComplete={accountMode === "register" ? "new-password" : "current-password"} name="password" type="password" value={accountForm.password} onChange={event => setAccountForm(previous => ({ ...previous, password: event.target.value }))} required minLength={accountMode === "register" ? 10 : 1} placeholder={accountMode === "register" ? "At least 10 characters" : "Your password"} />
+              </label>
+              {accountError && <div className="customer-account-error" role="alert">{accountError}</div>}
+              <button className="checkout-primary-button customer-account-submit" type="submit" disabled={accountLoading}>
+                {accountLoading ? <><LoaderCircle size={18} /> Please wait...</> : accountMode === "register" ? "Create account and continue" : "Log in and continue"}
+              </button>
+            </form>
+            <small className="customer-account-note"><ShieldCheck size={15} /> Your account keeps checkout details connected to you.</small>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

@@ -62,12 +62,29 @@ export function AuthProvider({ children }) {
     };
   }
 
+  async function loginCustomer(credentials) {
+    const result = await post("/auth/login", credentials);
+    if (result.user?.role !== "customer") {
+      throw new Error("That login belongs to a seller account. Use a customer account to order.");
+    }
+    saveToken(result.token);
+    setUser(result.user);
+    return result;
+  }
+
   async function register(details) {
     const result = await post("/auth/register", details);
 
     saveToken(result.token);
     setUser(result.user);
 
+    return result;
+  }
+
+  async function registerCustomer(details) {
+    const result = await post("/auth/customer/register", details);
+    saveToken(result.token);
+    setUser(result.user);
     return result;
   }
 
@@ -88,7 +105,9 @@ export function AuthProvider({ children }) {
         user,
         loading,
         login,
+        loginCustomer,
         register,
+        registerCustomer,
         logout,
         refreshUser
       }}

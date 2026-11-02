@@ -3,7 +3,7 @@
 
 .dashboard-shell {
   min-height: 100vh;
-  background: #f8f7f3;
+  background: #fafafa;
   display: flex;
 }
 
@@ -14,7 +14,7 @@
   top: 0;
   left: 0;
   z-index: 100;
-  background: #24251f;
+  background: #111111;
   color: white;
   display: flex;
   flex-direction: column;
@@ -54,14 +54,14 @@
 
 .sidebar-brand small {
   display: block;
-  color: #a5a498;
+  color: #a3a3a3;
   font-size: 8px;
   letter-spacing: 1.8px;
   margin-top: 3px;
 }
 
 .sidebar-section-label {
-  color: #858579;
+  color: #848484;
   font-size: 9px;
   letter-spacing: 1.7px;
   font-weight: 800;
@@ -81,7 +81,7 @@
   min-height: 46px;
   padding: 0 13px;
   border-radius: 9px;
-  color: #b7b7aa;
+  color: #b6b6b6;
   font-size: 12px;
   font-weight: 600;
   transition: .2s ease;
@@ -95,8 +95,8 @@
 
 .sidebar-link.active {
   color: white;
-  background: #e58b2820;
-  border: 1px solid #e58b2838;
+  background: #11111132;
+  border: 1px solid #11111155;
 }
 
 .sidebar-link.active svg {
@@ -121,8 +121,8 @@
   width: 37px;
   height: 37px;
   border-radius: 11px;
-  background: #e58b2830;
-  color: #f4b35e;
+  background: #11111142;
+  color: #d7d7d7;
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -140,7 +140,7 @@
 .store-info small {
   display: block;
   font-size: 10px;
-  color: #99998e;
+  color: #989898;
   margin-top: 4px;
 }
 
@@ -148,7 +148,7 @@
   border: 0;
   width: 100%;
   background: transparent;
-  color: #c0beb4;
+  color: #bebebe;
   padding: 13px 10px;
   border-radius: 9px;
   display: flex;
@@ -159,7 +159,7 @@
 
 .sidebar-logout:hover {
   background: #ffffff10;
-  color: #ff8d78;
+  color: #a4a4a4;
 }
 
 .mobile-close,
@@ -179,7 +179,7 @@
 .dashboard-topbar {
   height: 79px;
   background: #ffffff;
-  border-bottom: 1px solid #ecebe5;
+  border-bottom: 1px solid #e5e5e5;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -192,7 +192,7 @@
 .topbar-title span {
   display: block;
   font-size: 9px;
-  color: #a19f94;
+  color: #9f9f9f;
   font-weight: 800;
   letter-spacing: 1.5px;
   margin-bottom: 4px;
@@ -217,7 +217,7 @@
   background: white;
   display: grid;
   place-items: center;
-  color: #68675e;
+  color: #676767;
 }
 
 .topbar-icon:hover {
@@ -266,7 +266,7 @@
   min-height: 165px;
   padding: 30px 34px;
   border-radius: 17px;
-  background: linear-gradient(115deg, #292a23, #414136);
+  background: linear-gradient(115deg, #303030, #303030);
   color: white;
   display: flex;
   align-items: center;
@@ -285,7 +285,7 @@
 .welcome-banner span,
 .admin-welcome-banner span {
   font-size: 9px;
-  color: #efb76b;
+  color: #b5b5b5;
   letter-spacing: 1.8px;
   font-weight: 800;
 }
@@ -300,7 +300,7 @@
 
 .welcome-banner p,
 .admin-welcome-banner p {
-  color: #c9c8bd;
+  color: #c7c7c7;
   font-size: 12px;
 }
 
@@ -328,7 +328,7 @@
 
 .stat-card {
   background: white;
-  border: 1px solid #eeede7;
+  border: 1px solid #e5e5e5;
   border-radius: 14px;
   padding: 20px;
   min-width: 0;
@@ -337,7 +337,7 @@
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px #25251f09;
+  box-shadow: 0 12px 30px #11111109;
 }
 
 .stat-icon {
@@ -350,28 +350,28 @@
 }
 
 .stat-icon.orange {
-  background: #fff0dc;
-  color: #dc8420;
+  background: #f6f6f6;
+  color: #111111;
 }
 
 .stat-icon.purple {
-  background: #f0eafa;
+  background: #ececec;
   color: var(--purple);
 }
 
 .stat-icon.green {
-  background: #e8f6ed;
+  background: #f2f2f2;
   color: var(--green);
 }
 
 .stat-icon.red {
-  background: #fff0ee;
-  color: #d74e42;
+  background: #f3f3f3;
+  color: #6a6a6a;
 }
 
 .stat-icon.blue {
-  background: #eaf2ff;
-  color: #477fce;
+  background: #f1f1f1;
+  color: #797979;
 }
 
 .stat-card > span {
@@ -393,7 +393,7 @@
 
 .dashboard-panel {
   background: white;
-  border: 1px solid #eeede7;
+  border: 1px solid #e5e5e5;
   border-radius: 14px;
   padding: 23px;
   margin-bottom: 20px;
@@ -429,13 +429,13 @@
   padding: 45px 15px;
   text-align: center;
   color: var(--muted);
-  background: #fbfaf7;
-  border: 1px dashed #e6e3d9;
+  background: #fafafa;
+  border: 1px dashed #e5e5e5;
   border-radius: 13px;
 }
 
 .empty-state > svg {
-  color: #d9a15c;
+  color: #777777;
 }
 
 .empty-state h3 {
@@ -473,8 +473,8 @@
 }
 
 .seller-table th {
-  color: #8f8e84;
-  background: #faf9f6;
+  color: #8d8d8d;
+  background: #fafafa;
   font-size: 10px;
   font-weight: 700;
   padding: 13px;
@@ -483,20 +483,20 @@
 
 .seller-table td {
   padding: 15px 13px;
-  border-bottom: 1px solid #f0efe9;
-  color: #5d5d55;
+  border-bottom: 1px solid #f4f4f4;
+  color: #5c5c5c;
   white-space: nowrap;
 }
 
 .seller-table td strong {
-  color: #292a24;
+  color: #303030;
   display: block;
   font-size: 11px;
 }
 
 .seller-table td small {
   display: block;
-  color: #9b998f;
+  color: #999999;
   font-size: 10px;
   margin-top: 5px;
 }
@@ -511,7 +511,7 @@
   align-items: center;
   gap: 15px;
   justify-content: space-between;
-  border-bottom: 1px solid #f0efe9;
+  border-bottom: 1px solid #f4f4f4;
 }
 
 .order-row:last-child {
@@ -537,26 +537,26 @@
   gap: 5px;
   border-radius: 20px;
   padding: 6px 10px;
-  background: #fff4e5;
-  color: #b77624;
+  background: #f7f7f7;
+  color: #303030;
   font-size: 9px;
   font-weight: 800;
   text-transform: capitalize;
 }
 
 .admin-status.success {
-  background: #eaf7ef;
-  color: #25865a;
+  background: #f4f4f4;
+  color: #6e6e6e;
 }
 
 .admin-status.danger {
-  background: #fff0ed;
-  color: #cb5147;
+  background: #f3f3f3;
+  color: #6a6a6a;
 }
 
 .admin-status.warning {
-  background: #fff4e5;
-  color: #b77624;
+  background: #f7f7f7;
+  color: #303030;
 }
 
 /* PRODUCT MANAGEMENT */
@@ -579,14 +579,14 @@
   min-width: 0;
   width: min(100%, 410px);
   height: 46px;
-  border: 1px solid #e9e8e1;
+  border: 1px solid #e5e5e5;
   background: white;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 13px;
   border-radius: 10px;
-  color: #99988f;
+  color: #989898;
 }
 
 .product-search input {
@@ -605,7 +605,7 @@
 
 .seller-product-card {
   background: white;
-  border: 1px solid #eeede7;
+  border: 1px solid #e5e5e5;
   border-radius: 14px;
   overflow: hidden;
   transition: .25s ease;
@@ -619,7 +619,7 @@
 .seller-product-image {
   height: 195px;
   position: relative;
-  background: #f0eee8;
+  background: #f4f4f4;
 }
 
 .seller-product-image img {
@@ -668,7 +668,7 @@
 .seller-product-actions button {
   flex: 1;
   height: 36px;
-  border: 1px solid #ecebe5;
+  border: 1px solid #e5e5e5;
   background: white;
   border-radius: 8px;
   display: flex;
@@ -684,7 +684,7 @@
 }
 
 .seller-product-actions .delete-product {
-  color: #cf5047;
+  color: #6a6a6a;
 }
 
 .product-modal-backdrop {
@@ -721,7 +721,7 @@
 .editor-heading > button,
 .image-url-row button {
   border: 0;
-  background: #f5f4f0;
+  background: #fafafa;
   border-radius: 8px;
   width: 37px;
   height: 37px;
@@ -765,8 +765,8 @@
   width: 100%;
   min-width: 0;
   min-height: 43px;
-  border: 1px solid #e8e7e1;
-  background: #fdfdfb;
+  border: 1px solid #e5e5e5;
+  background: #fdfdfd;
   padding: 10px 12px;
   border-radius: 8px;
   font-size: 12px;
@@ -800,20 +800,20 @@
 }
 
 .option-chips button {
-  border: 1px solid #e9e7df;
+  border: 1px solid #e5e5e5;
   background: white;
   border-radius: 8px;
   padding: 9px 12px;
   font-size: 10px;
-  color: #64635b;
+  color: #636363;
   transition: .2s;
 }
 
 .option-chips button:hover,
 .option-chips button.selected {
   border-color: var(--orange);
-  color: #a75d12;
-  background: #fff4e5;
+  color: #303030;
+  background: #f7f7f7;
 }
 
 .editor-footer {
@@ -848,7 +848,7 @@
 .delivery-summary {
   padding: 16px;
   border-radius: 11px;
-  background: #fbf6ee;
+  background: #f6f6f6;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -880,7 +880,7 @@
 
 .delivery-state {
   min-height: 46px;
-  border: 1px solid #ecebe5;
+  border: 1px solid #e5e5e5;
   background: white;
   padding: 9px;
   border-radius: 9px;
@@ -896,9 +896,9 @@
 }
 
 .delivery-state.selected {
-  border-color: #e6aa62;
-  background: #fff7eb;
-  color: #a96518;
+  border-color: #b5b5b5;
+  background: #f7f7f7;
+  color: #303030;
 }
 
 .delivery-save {
@@ -910,8 +910,8 @@
 /* SUBSCRIPTIONS */
 
 .subscription-status {
-  background: #fff0dd;
-  color: #b86e16;
+  background: #f6f6f6;
+  color: #303030;
   padding: 9px 13px;
   border-radius: 30px;
   font-size: 10px;
@@ -921,9 +921,9 @@
 .admin-expired-alert {
   margin: 22px 0;
   overflow: hidden;
-  border: 1px solid #f0d6bd;
+  border: 1px solid #e9e9e9;
   border-radius: 15px;
-  background: #fffaf5;
+  background: #fafafa;
 }
 
 .admin-expired-alert-heading {
@@ -940,8 +940,8 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #fff0df;
-  color: #c66a27;
+  background: #f6f6f6;
+  color: #303030;
 }
 
 .admin-expired-alert-heading > div {
@@ -950,13 +950,13 @@
 
 .admin-expired-alert-heading h2 {
   margin: 5px 0;
-  color: #392e27;
+  color: #303030;
   font-size: 16px;
 }
 
 .admin-expired-alert-heading p {
   margin: 0;
-  color: #81756c;
+  color: #777777;
   font-size: 12px;
   line-height: 1.6;
 }
@@ -966,14 +966,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #a95520;
+  color: #303030;
   font-size: 12px;
   font-weight: 800;
   text-decoration: none;
 }
 
 .admin-expired-seller-list {
-  border-top: 1px solid #f2e5da;
+  border-top: 1px solid #e7e7e7;
 }
 
 .admin-expired-seller {
@@ -982,7 +982,7 @@
   align-items: center;
   gap: 15px;
   padding: 12px 21px;
-  border-bottom: 1px solid #f5ebe3;
+  border-bottom: 1px solid #f7f7f7;
 }
 
 .admin-expired-seller:last-child {
@@ -995,13 +995,13 @@
 }
 
 .admin-expired-seller strong {
-  color: #34302d;
+  color: #303030;
   font-size: 12px;
 }
 
 .admin-expired-seller > div span,
 .admin-expired-date {
-  color: #827970;
+  color: #7a7a7a;
   font-size: 11px;
 }
 
@@ -1032,9 +1032,9 @@
 .admin-expired-alert {
   margin: 22px 0;
   overflow: hidden;
-  border: 1px solid #f0d6bd;
+  border: 1px solid #e9e9e9;
   border-radius: 15px;
-  background: #fffaf5;
+  background: #fafafa;
 }
 
 .admin-expired-alert-heading {
@@ -1051,8 +1051,8 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #fff0df;
-  color: #c66a27;
+  background: #f6f6f6;
+  color: #303030;
 }
 
 .admin-expired-alert-heading > div {
@@ -1061,13 +1061,13 @@
 
 .admin-expired-alert-heading h2 {
   margin: 5px 0;
-  color: #392e27;
+  color: #303030;
   font-size: 16px;
 }
 
 .admin-expired-alert-heading p {
   margin: 0;
-  color: #81756c;
+  color: #777777;
   font-size: 12px;
   line-height: 1.6;
 }
@@ -1077,14 +1077,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #a95520;
+  color: #303030;
   font-size: 12px;
   font-weight: 800;
   text-decoration: none;
 }
 
 .admin-expired-seller-list {
-  border-top: 1px solid #f2e5da;
+  border-top: 1px solid #e7e7e7;
 }
 
 .admin-expired-seller {
@@ -1093,7 +1093,7 @@
   align-items: center;
   gap: 15px;
   padding: 12px 21px;
-  border-bottom: 1px solid #f5ebe3;
+  border-bottom: 1px solid #f7f7f7;
 }
 
 .admin-expired-seller:last-child {
@@ -1106,13 +1106,13 @@
 }
 
 .admin-expired-seller strong {
-  color: #34302d;
+  color: #303030;
   font-size: 12px;
 }
 
 .admin-expired-seller > div span,
 .admin-expired-date {
-  color: #827970;
+  color: #7a7a7a;
   font-size: 11px;
 }
 
@@ -1149,14 +1149,14 @@
 
 .subscription-main-card,
 .payment-card {
-  border: 1px solid #eeede7;
+  border: 1px solid #e5e5e5;
   background: white;
   border-radius: 16px;
   padding: 27px;
 }
 
 .subscription-main-card {
-  background: linear-gradient(145deg, #292a23, #3c3b30);
+  background: linear-gradient(145deg, #303030, #303030);
   color: white;
   min-height: 360px;
 }
@@ -1167,7 +1167,7 @@
   align-items: center;
   font-size: 9px;
   letter-spacing: 1px;
-  color: #d9b889;
+  color: #d7d7d7;
 }
 
 .subscription-icon {
@@ -1176,8 +1176,8 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
-  background: #e58b2825;
-  color: #f2ad56;
+  background: #11111138;
+  color: #b5b5b5;
 }
 
 .subscription-main-card h2 {
@@ -1187,7 +1187,7 @@
 }
 
 .subscription-main-card > p {
-  color: #c4c2b6;
+  color: #c2c2c2;
   font-size: 12px;
   line-height: 1.7;
 }
@@ -1205,7 +1205,7 @@
 }
 
 .subscription-price span {
-  color: #c3c1b8;
+  color: #c1c1c1;
   font-size: 12px;
 }
 
@@ -1219,13 +1219,13 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #e7e5dc;
+  color: #e5e5e5;
   font-size: 11px;
   margin: 12px 0;
 }
 
 .subscription-feature svg {
-  color: #e9a650;
+  color: #777777;
 }
 
 .payment-card-heading h2 {
@@ -1261,7 +1261,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 11px 13px;
-  background: #faf8f3;
+  background: #fafafa;
   border-radius: 9px;
 }
 
@@ -1278,7 +1278,7 @@
 }
 
 .amount-to-pay {
-  background: #fff5e8;
+  background: #f7f7f7;
   border-radius: 10px;
   padding: 15px;
   margin: 22px 0;
@@ -1293,8 +1293,8 @@
 }
 
 .payment-warning {
-  background: #fff9e9;
-  color: #98712e;
+  background: #fafafa;
+  color: #747474;
   padding: 13px;
   border-radius: 9px;
   display: flex;
@@ -1325,7 +1325,7 @@
 /* ADMIN AREA */
 
 .admin-sidebar .brand-symbol {
-  background: #38382f;
+  background: #303030;
   color: var(--orange);
 }
 
@@ -1335,7 +1335,7 @@
   gap: 10px;
   padding: 14px 9px;
   border-top: 1px solid #ffffff18;
-  color: #e4aa59;
+  color: #777777;
 }
 
 .admin-security-note strong {
@@ -1346,7 +1346,7 @@
 .admin-security-note small {
   display: block;
   font-size: 9px;
-  color: #aaa99e;
+  color: #a8a8a8;
   margin-top: 4px;
 }
 
@@ -1354,8 +1354,8 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  background: #eaf7ef;
-  color: #25865a;
+  background: #f4f4f4;
+  color: #6e6e6e;
   padding: 9px 12px;
   border-radius: 30px;
   font-size: 10px;
@@ -1363,8 +1363,8 @@
 }
 
 .admin-live-label {
-  background: #292a23;
-  color: #f0b05b;
+  background: #303030;
+  color: #b5b5b5;
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 9px;
@@ -1384,7 +1384,7 @@
 
 .admin-shortcut {
   background: white;
-  border: 1px solid #eeede7;
+  border: 1px solid #e5e5e5;
   border-radius: 13px;
   padding: 19px;
   display: flex;
@@ -1395,7 +1395,7 @@
 
 .admin-shortcut:hover {
   transform: translateY(-3px);
-  border-color: #e6b475;
+  border-color: #b5b5b5;
   box-shadow: 0 10px 25px #00000008;
 }
 
@@ -1421,7 +1421,7 @@
 }
 
 .admin-shortcut > svg:last-child {
-  color: #a6a399;
+  color: #a3a3a3;
 }
 
 /* ADMIN SELLERS */
@@ -1441,7 +1441,7 @@
 
 .admin-summary-row > div {
   background: white;
-  border: 1px solid #eeede7;
+  border: 1px solid #e5e5e5;
   padding: 17px;
   border-radius: 12px;
 }
@@ -1469,13 +1469,13 @@
   height: 34px;
   display: grid;
   place-items: center;
-  border: 1px solid #e9e8e1;
+  border: 1px solid #e5e5e5;
   background: white;
   border-radius: 8px;
 }
 
 .admin-ban-button {
-  color: #bd802e;
+  color: #777777;
 }
 
 .admin-action-buttons .admin-unsuspend-button {
@@ -1484,8 +1484,8 @@
   align-items: center;
   gap: 6px;
   padding: 0 9px;
-  color: #27835a;
-  border-color: #cfe6d8;
+  color: #6c6c6c;
+  border-color: #e0e0e0;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -1496,7 +1496,7 @@
 }
 
 .admin-delete-button {
-  color: #d24c44;
+  color: #686868;
 }
 
 /* ADMIN PAYMENT REQUESTS */
@@ -1506,9 +1506,9 @@
   gap: 13px;
   align-items: flex-start;
   padding: 18px;
-  background: #fff7e9;
-  color: #966521;
-  border: 1px solid #f0dfc1;
+  background: #f7f7f7;
+  color: #6b6b6b;
+  border: 1px solid #f6f6f6;
   border-radius: 12px;
   margin-bottom: 22px;
 }
@@ -1534,14 +1534,14 @@
 
 .admin-request-card {
   background: white;
-  border: 1px solid #ecebe5;
+  border: 1px solid #e5e5e5;
   padding: 23px;
   border-radius: 14px;
   transition: .2s;
 }
 
 .admin-request-card:hover {
-  border-color: #e6bc87;
+  border-color: #b5b5b5;
 }
 
 .request-card-heading {
@@ -1594,9 +1594,9 @@
 }
 
 .request-payment-note {
-  background: #faf9f5;
+  background: #fafafa;
   padding: 13px;
-  color: #77766c;
+  color: #757575;
   border-radius: 8px;
   font-size: 10px;
   line-height: 1.6;
@@ -1622,19 +1622,19 @@
 }
 
 .approve-button {
-  background: #25865a;
+  background: #6e6e6e;
   color: white;
-  border: 1px solid #25865a;
+  border: 1px solid #6e6e6e;
 }
 
 .approve-button:hover {
-  background: #1d704a;
+  background: #5c5c5c;
 }
 
 .reject-button {
   background: white;
-  color: #c84e43;
-  border: 1px solid #f0d4d1;
+  color: #676767;
+  border: 1px solid #ededed;
 }
 
 /* RESPONSIVE */
@@ -1922,8 +1922,8 @@
 }
 
 .seller-refresh-button:hover {
-  border-color: #e66b35;
-  color: #e66b35;
+  border-color: #111111;
+  color: #111111;
 }
 
 .seller-business-banner {
@@ -1934,7 +1934,7 @@
   padding: 30px 35px;
   margin-top: 28px;
   border-radius: 20px;
-  background: linear-gradient(115deg, #242321, #514238);
+  background: linear-gradient(115deg, #111111, #444444);
   color: white;
 }
 
@@ -1943,7 +1943,7 @@
 }
 
 .seller-business-banner span {
-  color: #f5a16f;
+  color: #b5b5b5;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -1956,7 +1956,7 @@
 
 .seller-business-banner p {
   margin: 0;
-  color: #d5d0cb;
+  color: #d1d1d1;
   font-size: 13px;
   line-height: 1.7;
 }
@@ -1969,7 +1969,7 @@
   place-items: center;
   border-radius: 25px;
   background: #ffffff12;
-  color: #f3a273;
+  color: #b5b5b5;
 }
 
 .seller-metric-grid {
@@ -2010,28 +2010,28 @@
 }
 
 .seller-metric-icon.green {
-  color: #218c56;
-  background: #e7f7ed;
+  color: #717171;
+  background: #f3f3f3;
 }
 
 .seller-metric-icon.orange {
-  color: #e66b35;
-  background: #fff0e7;
+  color: #111111;
+  background: #f1f1f1;
 }
 
 .seller-metric-icon.yellow {
-  color: #b77c12;
-  background: #fff5dc;
+  color: #303030;
+  background: #f7f7f7;
 }
 
 .seller-metric-icon.blue {
-  color: #3978d4;
-  background: #eaf2ff;
+  color: #717171;
+  background: #f1f1f1;
 }
 
 .seller-metric-icon.purple {
-  color: #8054c9;
-  background: #f1eaff;
+  color: #666666;
+  background: #ededed;
 }
 
 .seller-metric-card h2 {
@@ -2081,7 +2081,7 @@
 }
 
 .seller-panel-heading > svg {
-  color: #e66b35;
+  color: #111111;
 }
 
 .seller-sales-total {
@@ -2136,7 +2136,7 @@
   width: min(34px, 75%);
   min-height: 3px;
   border-radius: 7px 7px 2px 2px;
-  background: linear-gradient(180deg, #f3a16e, #e66b35);
+  background: linear-gradient(180deg, #b5b5b5, #111111);
   transition: height 0.3s ease;
 }
 
@@ -2160,7 +2160,7 @@
 }
 
 .seller-fulfilment-rate strong {
-  color: #23965a;
+  color: #797979;
   font-size: 35px;
 }
 
@@ -2179,7 +2179,7 @@
 .seller-progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #42b77b, #23965a);
+  background: linear-gradient(90deg, #9a9a9a, #797979);
   transition: width 0.3s ease;
 }
 
@@ -2218,27 +2218,27 @@
 }
 
 .seller-status-dot.pending {
-  background: #d99b30;
+  background: #777777;
 }
 
 .seller-status-dot.accepted {
-  background: #4384d8;
+  background: #7c7c7c;
 }
 
 .seller-status-dot.preparing {
-  background: #9868d3;
+  background: #7a7a7a;
 }
 
 .seller-status-dot.shipped {
-  background: #299db4;
+  background: #868686;
 }
 
 .seller-status-dot.delivered {
-  background: #26975c;
+  background: #7b7b7b;
 }
 
 .seller-status-dot.cancelled {
-  background: #d85b5b;
+  background: #767676;
 }
 
 .seller-activity-panel {
@@ -2249,7 +2249,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #e66b35;
+  color: #111111;
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
@@ -2270,7 +2270,7 @@
 }
 
 .seller-activity-row:hover {
-  background: #fffaf7;
+  background: #fafafa;
 }
 
 .seller-activity-icon {
@@ -2280,8 +2280,8 @@
   flex-shrink: 0;
   place-items: center;
   border-radius: 12px;
-  background: #fff0e7;
-  color: #e66b35;
+  background: #f1f1f1;
+  color: #111111;
 }
 
 .seller-activity-info {
@@ -2314,33 +2314,33 @@
 }
 
 .seller-status-pill.pending {
-  background: #fff4db;
-  color: #a8791a;
+  background: #f7f7f7;
+  color: #7c7c7c;
 }
 
 .seller-status-pill.accepted {
-  background: #eaf2ff;
-  color: #3978d4;
+  background: #f1f1f1;
+  color: #717171;
 }
 
 .seller-status-pill.preparing {
-  background: #f2eaff;
-  color: #8054c9;
+  background: #ededed;
+  color: #666666;
 }
 
 .seller-status-pill.shipped {
-  background: #e5f6fa;
-  color: #21849a;
+  background: #f3f3f3;
+  color: #717171;
 }
 
 .seller-status-pill.delivered {
-  background: #e7f7ed;
-  color: #218c56;
+  background: #f3f3f3;
+  color: #717171;
 }
 
 .seller-status-pill.cancelled {
-  background: #ffebeb;
-  color: #c34e4e;
+  background: #efefef;
+  color: #676767;
 }
 
 .seller-overview-empty {
@@ -2351,7 +2351,7 @@
   justify-content: center;
   gap: 10px;
   text-align: center;
-  color: #e66b35;
+  color: #111111;
 }
 
 .seller-overview-empty strong {
@@ -2382,7 +2382,7 @@
   border: 1px solid #ededed;
   border-radius: 15px;
   background: white;
-  color: #e66b35;
+  color: #111111;
   text-decoration: none;
 }
 
@@ -2477,9 +2477,9 @@
 }
 
 .seller-order-filters button.active {
-  border-color: #e66b35;
-  background: #fff0e7;
-  color: #d65f2b;
+  border-color: #111111;
+  background: #f1f1f1;
+  color: #111111;
 }
 
 .seller-orders-list {
@@ -2497,8 +2497,8 @@
 }
 
 .seller-order-card.selected {
-  border-color: #e66b35;
-  box-shadow: 0 0 0 3px #e66b3518;
+  border-color: #111111;
+  box-shadow: 0 0 0 3px #11111130;
 }
 
 .seller-order-card-heading {
@@ -2545,7 +2545,7 @@
 
 .seller-order-info h3 svg,
 .seller-order-products h3 svg {
-  color: #e66b35;
+  color: #111111;
 }
 
 .seller-order-info p {
@@ -2565,7 +2565,7 @@
 }
 
 .seller-order-info a {
-  color: #d65f2b;
+  color: #111111;
   text-decoration: none;
 }
 
@@ -2626,7 +2626,7 @@
 }
 
 .seller-order-grand-total strong {
-  color: #e66b35;
+  color: #111111;
 }
 
 .seller-order-date {
@@ -2653,7 +2653,7 @@
   padding: 12px 17px;
   border: 0;
   border-radius: 10px;
-  background: #e66b35;
+  background: #111111;
   color: white;
   font-size: 12px;
   font-weight: 800;
@@ -2677,13 +2677,13 @@
 }
 
 .seller-order-final.delivered {
-  background: #e7f7ed;
-  color: #218c56;
+  background: #f3f3f3;
+  color: #717171;
 }
 
 .seller-order-final.cancelled {
-  background: #ffebeb;
-  color: #c34e4e;
+  background: #efefef;
+  color: #676767;
 }
 
 .seller-orders-empty {
@@ -2713,7 +2713,7 @@
   padding: 0 4px;
   border: 2px solid white;
   border-radius: 20px;
-  background: #e64d43;
+  background: #6d6d6d;
   color: white;
   font-size: 9px;
   font-weight: 900;
@@ -2786,7 +2786,7 @@
   padding: 4px 0;
   border: 0;
   background: transparent;
-  color: #d65f2b;
+  color: #111111;
   font-size: 10px;
   font-weight: 800;
   cursor: pointer;
@@ -2811,11 +2811,11 @@
 }
 
 .seller-notification-item:hover {
-  background: #fffaf7;
+  background: #fafafa;
 }
 
 .seller-notification-item.unread {
-  background: #fff9f5;
+  background: #fafafa;
 }
 
 .seller-notification-icon {
@@ -2825,8 +2825,8 @@
   flex-shrink: 0;
   place-items: center;
   border-radius: 11px;
-  background: #fff0e7;
-  color: #e66b35;
+  background: #f1f1f1;
+  color: #111111;
 }
 
 .seller-notification-copy {
@@ -2858,7 +2858,7 @@
   flex-shrink: 0;
   margin-top: 5px;
   border-radius: 50%;
-  background: #e66b35;
+  background: #111111;
 }
 
 .seller-notification-empty {
@@ -2869,7 +2869,7 @@
   justify-content: center;
   gap: 9px;
   padding: 20px;
-  color: #e66b35;
+  color: #111111;
   text-align: center;
 }
 
@@ -3037,8 +3037,8 @@
   align-items: center;
   gap: 6px;
   padding: 0 9px;
-  color: #27835a;
-  border-color: #cfe6d8;
+  color: #6c6c6c;
+  border-color: #e0e0e0;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -3046,4 +3046,29 @@
 .admin-action-buttons button:disabled {
   opacity: 0.55;
   cursor: wait;
+}
+
+.sidebar-store .store-avatar {
+  background: #3d3d3d;
+  color: #ffffff;
+}
+
+/* Monochrome navigation contrast */
+.dashboard-sidebar .brand-symbol {
+  background: #ffffff;
+  color: #111111;
+}
+
+.dashboard-sidebar .sidebar-brand strong span {
+  color: #ffffff;
+}
+
+.dashboard-sidebar .sidebar-link.active {
+  background: #3d3d3d;
+  border-color: #666666;
+}
+
+.dashboard-sidebar .store-avatar {
+  background: #3d3d3d;
+  color: #ffffff;
 }

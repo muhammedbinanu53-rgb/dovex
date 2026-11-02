@@ -17,7 +17,7 @@
 
 .seller-eyebrow,
 .seller-welcome-text > span {
-  color: #e66b35;
+  color: #111111;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -31,7 +31,7 @@
 .seller-dashboard-heading p,
 .seller-section-heading p {
   margin: 0;
-  color: #858585;
+  color: #666666;
   font-size: 14px;
 }
 
@@ -43,7 +43,7 @@
   gap: 9px;
   padding: 13px 19px;
   border-radius: 12px;
-  background: #e66b35;
+  background: #111111;
   color: white;
   text-decoration: none;
   font-weight: 700;
@@ -77,23 +77,23 @@
 }
 
 .seller-stat-icon.purple {
-  background: #f1eaff;
-  color: #8054c9;
+  background: #ededed;
+  color: #666666;
 }
 
 .seller-stat-icon.orange {
-  background: #fff0e7;
-  color: #e66b35;
+  background: #f1f1f1;
+  color: #111111;
 }
 
 .seller-stat-icon.green {
-  background: #e8f8ef;
-  color: #23965a;
+  background: #f4f4f4;
+  color: #797979;
 }
 
 .seller-stat-icon.blue {
-  background: #eaf2ff;
-  color: #3978d4;
+  background: #f1f1f1;
+  color: #717171;
 }
 
 .seller-stat-card p {
@@ -128,7 +128,7 @@
   padding: 35px;
   overflow: hidden;
   border-radius: 22px;
-  background: linear-gradient(120deg, #272522, #494039);
+  background: linear-gradient(120deg, #111111, #555555);
   color: white;
 }
 
@@ -143,7 +143,7 @@
 
 .seller-welcome-text p {
   margin: 0 0 22px;
-  color: #d2ceca;
+  color: #cfcfcf;
   line-height: 1.7;
 }
 
@@ -155,7 +155,7 @@
   place-items: center;
   border-radius: 50%;
   background: #ffffff12;
-  color: #f2a06d;
+  color: #d7d7d7;
 }
 
 .seller-section-heading {
@@ -181,7 +181,7 @@
   border: 1px solid #eeeeee;
   border-radius: 16px;
   background: white;
-  color: #e66b35;
+  color: #111111;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -229,8 +229,8 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #fff0e7;
-  color: #e66b35;
+  background: #f1f1f1;
+  color: #111111;
 }
 
 .seller-empty-state h3 {

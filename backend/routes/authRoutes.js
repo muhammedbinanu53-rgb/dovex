@@ -137,6 +137,77 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Customer accounts are separate from seller storefront accounts.
+router.post("/customer/register", async (req, res) => {
+  try {
+    const fullName = String(req.body.fullName || "").trim();
+    const email = cleanEmail(req.body.email);
+    const phone = String(req.body.phone || "").trim();
+    const password = req.body.password;
+
+    if (!fullName || !email || !phone || !password) {
+      return res.status(400).json({
+        message: "Please complete all account fields."
+      });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: "Enter a valid email address." });
+    }
+    if (String(password).length < 10) {
+      return res.status(400).json({
+        message: "Password must contain at least 10 characters."
+      });
+    }
+    if (fullName.length > 100 || phone.length > 30) {
+      return res.status(400).json({ message: "Some account fields are too long." });
+    }
+
+    const db = await readDatabase();
+    if (db.users.some(user => user.email === email)) {
+      return res.status(409).json({ message: "This email address is already registered. Log in instead." });
+    }
+
+    const customer = {
+      id: crypto.randomUUID(),
+      role: "customer",
+      fullName,
+      email,
+      phone,
+      passwordHash: await hashPassword(password),
+      status: "active",
+      banned: false,
+      createdAt: new Date().toISOString()
+    };
+
+    await updateDatabase(data => {
+      if (data.users.some(user => user.email === email)) {
+        const error = new Error("EMAIL_EXISTS");
+        throw error;
+      }
+      data.users.push(customer);
+    });
+
+    return res.status(201).json({
+      message: "Customer account created successfully.",
+      token: createToken(customer),
+      user: {
+        id: customer.id,
+        fullName: customer.fullName,
+        email: customer.email,
+        phone: customer.phone,
+        role: customer.role,
+        status: customer.status
+      }
+    });
+  } catch (error) {
+    if (error.message === "EMAIL_EXISTS") {
+      return res.status(409).json({ message: "This email address is already registered. Log in instead." });
+    }
+    console.error("Customer registration error:", error);
+    return res.status(500).json({ message: "Unable to create customer account." });
+  }
+});
+
 router.post("/login", async (req, res) => {
   try {
     const email = cleanEmail(req.body.email);
@@ -196,6 +267,7 @@ router.post("/login", async (req, res) => {
       user: {
         id: user.id,
         fullName: user.fullName,
+        phone: user.phone,
         storeName: user.storeName,
         email: user.email,
         role: user.role,
@@ -221,6 +293,7 @@ router.get("/me", authenticate, (req, res) => {
     user: {
       id: user.id,
       fullName: user.fullName,
+      phone: user.phone,
       storeName: user.storeName,
       email: user.email,
       role: user.role,

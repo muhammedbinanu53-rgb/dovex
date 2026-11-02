@@ -7,7 +7,6 @@ import {
   Package,
   ShoppingBag,
   LogOut,
-  ShieldCheck,
   X
 } from "lucide-react";
 
@@ -36,9 +35,7 @@ export default function AdminSidebar({ open, close }) {
 
       <aside className={`dashboard-sidebar admin-sidebar ${open ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
-          <div className="brand-symbol admin-symbol">
-            <ShieldCheck size={22} />
-          </div>
+          <img src="/dovex-logo-black.svg" alt="" className="dovex-brand-image" />
 
           <div>
             <strong>Dove<span>X</span></strong>

@@ -11,6 +11,7 @@ const {
 
 const {
   authenticate,
+  requireCustomer,
   requireActiveSeller
 } = require("../middleware/authMiddleware");
 
@@ -325,7 +326,7 @@ function getPublicOrder(order) {
 }
 
 // CREATE CUSTOMER ORDER
-router.post("/", async (req, res) => {
+router.post("/", authenticate, requireCustomer, async (req, res) => {
   try {
     const customerDetails = validateCustomer(req.body);
 
@@ -375,6 +376,7 @@ router.post("/", async (req, res) => {
 
       const order = {
         id: crypto.randomUUID(),
+        customerId: req.user.id,
         orderNumber: makeOrderNumber(),
         confirmationCode: makeConfirmationCode(db),
 

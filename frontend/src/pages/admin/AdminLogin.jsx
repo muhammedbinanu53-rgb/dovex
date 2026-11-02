@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShieldCheck, LockKeyhole, ArrowRight } from "lucide-react";
+import { LockKeyhole, ArrowRight } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
 
@@ -39,7 +39,7 @@ export default function AdminLogin() {
     <div className="admin-login-page">
       <div className="admin-login-card">
         <div className="admin-login-logo">
-          <img src="/dovex-logo.png" alt="DoveX" className="dovex-brand-image" />
+          <img src="/dovex-logo-black.svg" alt="" className="dovex-brand-image" />
         </div>
 
         <span className="eyebrow">RESTRICTED ACCESS</span>
